@@ -134,6 +134,7 @@ GEM
     nio4r (2.7.1)
     nokogiri (1.16.3-x86_64-linux)
       racc (~> 1.4)
+    pg (1.5.4)
     psych (5.1.2)
       stringio
     public_suffix (5.0.5)
@@ -178,9 +179,6 @@ GEM
     reline (0.5.0)
       io-console (~> 0.5)
     rexml (3.2.6)
-    rgeo (3.0.1)
-    rgeo-geojson (2.1.1)
-      rgeo (>= 1.0.0)
     rubyzip (2.3.2)
     selenium-webdriver (4.19.0)
       base64 (~> 0.2)
@@ -229,9 +227,9 @@ DEPENDENCIES
   httparty
   importmap-rails
   jbuilder
+  pg
   puma (~> 5.0)
   rails (~> 7.0.8)
-  rgeo-geojson
   selenium-webdriver
   sprockets-rails
   sqlite3 (~> 1.4)
