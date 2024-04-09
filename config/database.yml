@@ -13,8 +13,8 @@ development:
   <<: *default
   database: Feature_development
   encoding: unicode
-  username: yakut
-  password: 
+  username: <%= ENV["DATABASE_USERNAME"] %>
+  password: <%= ENV["DATABASE_PASSWORD"] %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
