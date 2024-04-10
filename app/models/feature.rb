@@ -11,7 +11,7 @@ class Feature < ApplicationRecord
     attribute :external_url, :string 
 
     # Enumerado para magType
-    enum mag_type: { md: 0, ml: 1, ms: 2, mw: 3, me: 4, mi: 5, mb: 6, mlg: 7 }
+    enum mag_type: { md: 0, ml: 1, ms: 2, mw: 3, me: 4, mi: 5, mb: 6, mlg: 7, mwr:8, mb_lg:9, mww:10 }
 
     validates :title, presence: true
     validates :place, presence: true

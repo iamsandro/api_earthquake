@@ -8,6 +8,9 @@ class Api::V1::CommentsController < ApplicationController
 
     begin
       @new_coment = Comment.create!(data)
+
+      render json: @new_coment
+      return
     rescue ActiveRecord::RecordInvalid => e
       puts "Error: #{e}"
     rescue ActiveRecord::RecordNotSaved => e
