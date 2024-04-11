@@ -1,36 +1,35 @@
 class Api::V1::FeaturesController < ApplicationController
   def index
 
-    page = params[:page].to_i  || 1
-    per_page = params[:per_page].to_i || 10
+    page = params[:page] || 1
+    per_page = params[:per_page] || 10
     mag_type = params[:mag_type] ? params[:mag_type].split(",") : null
 
+    if  per_page.is_a?(Numeric) && (per_page > 1000 || per_page <= 0)
+      render json: {error: "The per_page field is a value between 0 and 1000, «#{per_page}» is out of range"}, status: 400
 
-    if mag_type && !(["md", "ml", "ms", "mw", "me", "mi", "mb", "mlg", "mwr", "mb_lg", "mww"] & mag_type).any?
-      render json: {error: "no podemos filtrar por magtype, ya que no es válido"}
-
-      return
     end
 
-    if per_page > 1000 || per_page <= 0 || per_page.is_a?(String)
-      render json: {error: "El feed per_page es un valor númerico superior a 0 y menor 1000"}
-
-      return
-    end
-
+    
     if page.is_a?(String) || page <= 0
-      render json: {error: "El feed page es un valor númerico positivo"}
-
+      render json: {error: "El feed page is a numeric value, «#{page}» is wrong"}, status: 400
+      
       return
     end 
 
+    if mag_type && !(["md", "ml", "ms", "mw", "me", "mi", "mb", "mlg", "mwr", "mb_lg", "mww"] & mag_type).any?
+      render json: {error: "sorry, we could not filter because the «#{mag_type}» field is of the wrong type"}, status: 400
+
+    end
+
+    puts "hola"
 
     init = Time.now
     total_features = mag_type&.length ? Feature.where(mag_type: mag_type).count : Feature.count
 
     if total_features.zero?
       if(mag_type.length && Feature.exists?)
-         render json: {data: []}
+         render json: {data: []}, status: 200
 
          return
       end
