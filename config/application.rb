@@ -8,6 +8,9 @@ Bundler.require(*Rails.groups)
 
 module ApiEarthquake
   class Application < Rails::Application
+    #This will configure your application to work as an API.
+    config.api_only = true
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
