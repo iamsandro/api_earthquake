@@ -3,7 +3,7 @@ class Api::V1::FeaturesController < ApplicationController
 
     page = params[:page]&.to_i || 1
     per_page = params[:per_page]&.to_i || 10
-    mag_type = params[:mag_type]&.present? ? params[:mag_type].split(",") : []
+    mag_type = params[:mag_type]&.present? ? params[:mag_type].split(",") : nil
 
     if  per_page.is_a?(Numeric) && (per_page > 1000 || per_page <= 0)
       render json: {error: "The per_page field is a value between 0 and 1000, «#{per_page}» is out of range"}, status: 400
@@ -18,7 +18,7 @@ class Api::V1::FeaturesController < ApplicationController
       return
     end 
 
-    if mag_type.length > 0 && !(["md", "ml", "ms", "mw", "me", "mi", "mb", "mlg", "mwr", "mb_lg", "mww"] & mag_type).any?
+    if mag_type && !(["md", "ml", "ms", "mw", "me", "mi", "mb", "mlg", "mwr", "mb_lg", "mww"] & mag_type).any?
       render json: {error: "sorry, we could not filter because the «#{mag_type}» field is of the wrong type"}, status: 400
 
       return
@@ -26,7 +26,7 @@ class Api::V1::FeaturesController < ApplicationController
 
 
     init = Time.now
-    total_features = mag_type&.length ? Feature.where(mag_type: mag_type).count : Feature.count
+    total_features = mag_type ? Feature.where(mag_type: mag_type).count : Feature.count
 
     if total_features.zero?
       if(mag_type.length && Feature.exists?)
@@ -36,15 +36,15 @@ class Api::V1::FeaturesController < ApplicationController
       end
 
       getData()
-      total_features = mag_type&.length ? Feature.where(mag_type: mag_type).count : Feature.count
+      total_features = mag_type ? Feature.where(mag_type: mag_type).count : Feature.count
     end
 
     
-    if mag_type&.length
+    if mag_type
       query_features = Feature.where(mag_type: mag_type).paginate(page: page, per_page: per_page)
         
     else
-      query_features = Feature.paginate(page: page, per_page: page)  
+      query_features = Feature.paginate(page: page, per_page: per_page)  
     
     end
 
@@ -76,7 +76,6 @@ class Api::V1::FeaturesController < ApplicationController
     end
        
    fin = Time.now
-   puts "TIEMPO GASTADO: #{fin-init}"
 
     response  = {
       data: features,
@@ -84,8 +83,8 @@ class Api::V1::FeaturesController < ApplicationController
         current_page: page,
         per_page: per_page,
         total: total_features
-      }
-      time: fin
+      },
+      time: fin-init
     }
 
     render json: response, status: 200
