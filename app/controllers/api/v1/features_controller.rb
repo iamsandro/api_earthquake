@@ -1,13 +1,14 @@
 class Api::V1::FeaturesController < ApplicationController
   def index
 
-    page = params[:page] || 1
-    per_page = params[:per_page] || 10
-    mag_type = params[:mag_type] ? params[:mag_type].split(",") : null
+    page = params[:page]&.to_i || 1
+    per_page = params[:per_page]&.to_i || 10
+    mag_type = params[:mag_type]&.present? ? params[:mag_type].split(",") : []
 
     if  per_page.is_a?(Numeric) && (per_page > 1000 || per_page <= 0)
       render json: {error: "The per_page field is a value between 0 and 1000, «#{per_page}» is out of range"}, status: 400
 
+      return
     end
 
     
@@ -17,12 +18,12 @@ class Api::V1::FeaturesController < ApplicationController
       return
     end 
 
-    if mag_type && !(["md", "ml", "ms", "mw", "me", "mi", "mb", "mlg", "mwr", "mb_lg", "mww"] & mag_type).any?
+    if mag_type.length > 0 && !(["md", "ml", "ms", "mw", "me", "mi", "mb", "mlg", "mwr", "mb_lg", "mww"] & mag_type).any?
       render json: {error: "sorry, we could not filter because the «#{mag_type}» field is of the wrong type"}, status: 400
 
+      return
     end
 
-    puts "hola"
 
     init = Time.now
     total_features = mag_type&.length ? Feature.where(mag_type: mag_type).count : Feature.count
@@ -84,11 +85,11 @@ class Api::V1::FeaturesController < ApplicationController
         per_page: per_page,
         total: total_features
       }
+      time: fin
     }
 
-    render json: response
-    # @features = Feature.all
-    # return @features
+    render json: response, status: 200
+
   end
 
   def getData
