@@ -29,7 +29,7 @@ class Api::V1::FeaturesController < ApplicationController
     total_features = mag_type ? Feature.where(mag_type: mag_type).count : Feature.count
 
     if total_features.zero?
-      if(mag_type.length && Feature.exists?)
+      if(mag_type && Feature.exists?)
          render json: {data: []}, status: 200
 
          return
