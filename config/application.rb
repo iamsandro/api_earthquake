@@ -21,5 +21,13 @@ module ApiEarthquake
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Configura CORS para permitir solicitudes desde el frontend
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'http://localhost:3001' # Cambia esto según tu dominio de frontend
+        resource '*', headers: :any, methods: [:get, :post, :options]
+      end
+    end
   end
 end

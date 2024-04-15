@@ -25,7 +25,6 @@ class Api::V1::FeaturesController < ApplicationController
     end
 
 
-    init = Time.now
     total_features = mag_type ? Feature.where(mag_type: mag_type).count : Feature.count
 
     if total_features.zero?
@@ -75,7 +74,6 @@ class Api::V1::FeaturesController < ApplicationController
       }
     end
        
-   fin = Time.now
 
     response  = {
       data: features,
@@ -84,11 +82,9 @@ class Api::V1::FeaturesController < ApplicationController
         per_page: per_page,
         total: total_features
       },
-      time: fin-init
     }
 
     render json: response, status: 200
-
   end
 
   def getData
@@ -121,7 +117,6 @@ class Api::V1::FeaturesController < ApplicationController
         
         # De acuerdo a la condiciones del reto solo obtengo aquellos features que cumplan con las condiciones.
         if (mag_type && latitude && longitude && magnitude && title && place && url && magnitude >= -1.0 && magnitude <= 10.0 && latitude >= -90.0 && latitude <= 90 && longitude >= -180.0 && longitude<= 180.0)
-         puts mag_type if feature["id"] === 'us7000mb3r'
             data = {
                 :type=>feature["type"],
                 :external_id=>feature["id"],
@@ -143,7 +138,6 @@ class Api::V1::FeaturesController < ApplicationController
         end
       end
 
-      puts @features.length
 
       begin
         Feature.upsert_all(@features, unique_by: :external_id)
